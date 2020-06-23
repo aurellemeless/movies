@@ -1,2 +1,3 @@
-# movies
-Laravel movies api 
+
+## movies API
+Laravel movies API
