@@ -21,6 +21,10 @@ class CreateMoviesTable extends Migration
             $table->integer('country_id');
             $table->timestamps();
         });
+        Schema::create('movie_gender', function (Blueprint $table) {
+            $table->integer('gender_id');
+            $table->integer('movie_id');
+        });
     }
 
     /**
