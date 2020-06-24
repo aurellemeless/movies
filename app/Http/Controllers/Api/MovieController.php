@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 use App\Models\Movie;
+use App\Http\Requests\StoreUpdateMovie;
 
 
 class MovieController extends Controller
@@ -16,13 +17,8 @@ class MovieController extends Controller
         return response()->json($data);
     }
 
-    function store(Request $request){
-        $request->validate([
-            'title' => 'required',
-            'genres' => 'array|required',
-            'country_id' => 'required',
-            'cover_file' => 'sometimes|image|max:2048', // 2MB 
-        ]);
+    function store(StoreUpdateMovie $request){
+        
         $record = new Movie;
         $record->title = $request->title;
         $record->country_id = $request->country_id;
@@ -38,13 +34,8 @@ class MovieController extends Controller
         return response()->json($record);
     }
 
-    function update(Request $request, $id){
-        $request->validate([
-            'title' => 'required',
-            'genres' => 'array|required',
-            'country_id' => 'required',
-            'cover_file' => 'sometimes|image|max:2048',
-        ]);
+    function update(StoreUpdateMovie $request, $id){
+        
         $record = Movie::findOrfail($id);
         $record->title = $request->title;
         $record->country_id = $request->country_id;
@@ -53,7 +44,6 @@ class MovieController extends Controller
         }
         if($request->hasFile('cover_file')){
             if($record->cover){
-                dd($record);
                Storage::disk('public')->delete($record->cover);
             }
             $record->cover = $request->file('cover_file')->store('covers','public');
@@ -66,7 +56,7 @@ class MovieController extends Controller
 
     
     function read(Request $request, $id){
-        $record = Movie::findOrfail($id);
+        $record = Movie::with(['genders','country'])->findOrfail($id);
         return response()->json($record);
     }
     
