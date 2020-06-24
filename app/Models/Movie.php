@@ -17,7 +17,7 @@ class Movie extends Model
         return $this->belongsToMany('App\Models\Gender','movie_gender');
     }
     
-    public function countries(){
+    public function country(){
         return $this->belongsTo('App\Models\Country');
     }
 }
