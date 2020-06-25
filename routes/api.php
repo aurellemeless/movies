@@ -22,6 +22,7 @@ Route::post('/movies','Api\MovieController@store');
 Route::put('/movies/{id}','Api\MovieController@update');
 Route::delete('/movies/{id}','Api\MovieController@delete');
 Route::get('/movies','Api\MovieController@index');
+Route::get('/movies/search','Api\MovieController@search');
 Route::get('/movies/{id}','Api\MovieController@read');
 
 // countries

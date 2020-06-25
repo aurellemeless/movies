@@ -17,6 +17,18 @@ class MovieController extends Controller
         return response()->json($data);
     }
 
+    
+    function search(Request $request){
+        $query = Movie::with(['genders','country']);
+        if($request->has('q')){
+            $q = $request->q;
+            $query->where('title','like', '%'.$q.'%');
+        }
+        $data = $query->paginate();
+        return response()->json($data);
+    }
+
+
     function store(StoreUpdateMovie $request){
         
         $record = new Movie;
