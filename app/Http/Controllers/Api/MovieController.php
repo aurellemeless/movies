@@ -6,12 +6,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
+use Image;
+
 use App\Models\Movie;
 use App\Http\Requests\StoreUpdateMovie;
 
 
 class MovieController extends Controller
 {
+    protected $_width = 250;
+    protected $_height = 250;
     function index(Request $request){
         $data = Movie::with(['genders','country'])->paginate();
         return response()->json($data);
@@ -39,6 +43,11 @@ class MovieController extends Controller
         }
         if($request->hasFile('cover_file')){
             $record->cover = $request->file('cover_file')->store('covers','public');
+            $img = Image::make(storage_path('app/public/'.$record->cover))->resize($this->_width, $this->_height, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $img->save();
+
         }
         $record->save();
         $record->genders()->sync($request->genres);
@@ -59,6 +68,10 @@ class MovieController extends Controller
                Storage::disk('public')->delete($record->cover);
             }
             $record->cover = $request->file('cover_file')->store('covers','public');
+            $img = Image::make(storage_path('app/public/'.$record->cover))->resize($this->_width, $this->_height, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $img->save();
         }
         $record->save();
         $record->genders()->sync($request->genres);
